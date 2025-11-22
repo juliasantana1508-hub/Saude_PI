@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang="title">Bem-Estar 360 - Pressão Arterial</title>
+    
+    <!-- CSS externo -->
+    <link rel="stylesheet" href="./CSS/estiloIndicadores.css">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="TopoSite">
+        <div class="Logo">
+            <img id="logo-site" class="ImgLogo" src="./Img/logo-clara.png" alt="Logo do site Bem-Estar 360">
+        </div>
+
+        <button class="menu-toggle" aria-label="Abrir menu de navegação" data-lang="menuToggle">☰</button>
+
+        <nav class="Navegacao">
+            <ul>
+                <li><a href="./index.html" data-lang="home">Home</a></li>
+                <li><a href="./monitoramento.html" data-lang="monitoring">Monitoramento</a></li>
+                <li><a href="./servicos.html" data-lang="services">Serviços</a></li>
+                <li><a href="./quemSomos.html" data-lang="about">Quem somos</a></li>
+                <li><a href="./login.html" data-lang="login">Login</a></li>
+
+                <li class="config-menu">
+                    <button id="config-btn" aria-haspopup="true" aria-expanded="false" data-lang="settings">⚙️</button>
+                    <div class="dropdown">
+                        <button id="toggle-theme" data-lang="darkMode">🌙 Modo Escuro</button>
+                        <button id="change-lang" data-lang="changeLang">🌎 Trocar Idioma</button>
+                        <button id="accessibility" class="Aumentar" data-lang="accessibility">♿ Aumentar fonte</button>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Pressão Arterial -->
+    <section class="registroIndicador">
+        <div class="container">
+            <h1 data-lang="pressureTitle">Registre a sua pressão arterial</h1>
+            <div class="leftImg">
+                <img src="./Img/medindoPressao.jpg" alt="Pressão">
+            </div>
+
+            <div class="rightForms">
+                <form id="pressaoForm">
+                    <div class="inputs-row">
+                        <div class="input-group">
+                            <label for="sistolica" data-lang="systolicPressure">Pressão Sistólica (mmHg)</label>
+                            <input type="number" id="sistolica" name="sistolica" placeholder="Ex: 120" min="0" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="diastolica" data-lang="diastolicPressure">Pressão Diastólica (mmHg)</label>
+                            <input type="number" id="diastolica" name="diastolica" placeholder="Ex: 80" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="data" data-lang="measurementDate">Data da Medição</label>
+                        <input type="date" id="data" name="data" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="hora" data-lang="measurementTime">Hora da Medição</label>
+                        <input type="time" id="hora" name="hora" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="observacoes" data-lang="observations">Observações</label>
+                        <textarea id="observacoes" name="observacoes" rows="3" placeholder="Ex: medi após caminhada..."></textarea>
+                    </div>
+
+                    <button type="submit" id="salvarPressao" data-lang="saveRecord">Salvar Registro</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="help">
+        <div class="help-container">
+            <h2 data-lang="interpretationTitle">Como interpretar seus registros de pressão</h2>
+            <p data-lang="interpretationDesc">Veja abaixo como entender os valores de pressão arterial registrados:</p>
+
+            <div class="help-cards">
+                <div class="help-card green">
+                    <h3 data-lang="normal">Normal</h3>
+                    <p data-lang="normalPressure">Pressão sistólica até <strong>120 mmHg</strong><br>
+                        Pressão diastólica até <strong>80 mmHg</strong></p>
+                    <p class="advice1">✅ Está dentro do esperado, continue monitorando regularmente.</p>
+                </div>
+
+                <div class="help-card orange">
+                    <h3 data-lang="attention">Atenção</h3>
+                    <p data-lang="preHypertension">Pressão sistólica entre <strong>121-139 mmHg</strong><br>
+                        Pressão diastólica entre <strong>81-89 mmHg</strong></p>
+                    <p class="advice2"></p>⚠️ Fique atento! Pode indicar pré-hipertensão ou necessidade de ajustes no estilo de vida.</p>
+                </div>
+
+                <div class="help-card red">
+                    <h3 data-lang="danger">Perigo</h3>
+                    <p data-lang="highPressure">Pressão sistólica ≥ <strong>140 mmHg</strong><br>
+                        Pressão diastólica ≥ <strong>90 mmHg</strong></p>
+                    <p class="advice3"></p>⛔ Procure orientação médica imediatamente!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rodapé -->
+    <footer class="footer">
+        <div class="footerContainer">
+            <!-- Logo e nome -->
+            <div class="footerBrand">
+                <img src="./Img/logo-footer.png" alt="Bem Estar 360" class="footerLogo">
+                <span data-lang="footerBrand">Bem-Estar 360</span>
+            </div>
+
+            <div class="footerLinks">
+                <ul>
+                    <li><a href="./index.html" data-lang="footerHome">Home</a></li>
+                    <li><a href="./monitoramento.html" data-lang="footerMonitoring">Monitoramento</a></li>
+                    <li><a href="./servicos.html" data-lang="footerHistory">Serviços</a></li>
+                    <li><a href="./quemSomos.html" data-lang="footerServices">Quem Somos</a></li>
+                    <li><a href="" data-lang="footerFaq">FAQ</a></li>
+                </ul>
+            </div>
+
+            <!-- Contato -->
+            <div class="footerContato">
+                <h4 data-lang="footerContactTitle">Contato</h4>
+                <p data-lang="footerEmail">Email: contato@bemestar360.com</p>
+                <p data-lang="footerPhone">Telefone: (11) 1234-5678</p>
+                <div class="footerSocials">
+                    <a href="#"><img src=".//Img/face_icon.png" alt="Facebook"></a>
+                    <a href="#"><img src="./Img/insta_icon.webp" alt="Instagram"></a>
+                    <a href="#"><img src="./Img/X_icon.svg.png" alt="Twitter"></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="footerBottom">
+            <p data-lang="footerCopy">&copy; 2025 Bem-Estar 360. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="./JS/script.js"></script>
+</body>
+
+</html>

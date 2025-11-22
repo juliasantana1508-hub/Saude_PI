@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang="title">Saúde 360 - Serviços</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="icon/icon_BemEstar360.ico">
+
+    <!-- CSS externo -->
+    <link rel="stylesheet" href="./Css/estiloServico.css">
+</head>
+
+<body>
+      <!-- Header -->
+    <header class="TopoSite">
+        <div class="Logo">
+            <img id="logo-site" class="ImgLogo" src="./Img/logo-clara.png" alt="Logo do site Bem-Estar 360">
+        </div>
+
+          <button class="menu-toggle"
+            aria-label="Abrir menu de navegação"
+            aria-controls="menu-principal"
+            aria-expanded="false" data-lang="menuToggle">☰</button>
+
+        <nav class="Navegacao">
+            <ul>
+                <li><a href="./index.html" data-lang="home">Home</a></li>
+                <li><a href="./monitoramento.html" data-lang="monitoring">Monitoramento</a></li>
+                <li><a href="./servicos.html" data-lang="services">Serviços</a></li>
+                <li><a href="./quemSomos.html" data-lang="about">Quem somos</a></li>
+                <li><a href="./login.html" data-lang="login">Login</a></li>
+
+                <!-- Menu de Configurações -->
+                <li class="config-menu">
+                    <button id="config-btn" aria-haspopup="true" aria-expanded="false" data-lang="settings">⚙️</button>
+
+                    <div class="dropdown" role="menu">
+                        <button id="toggle-theme" data-lang="darkMode">🌙 Modo Escuro</button>
+                        <button id="change-lang" data-lang="changeLang">🌎 Trocar Idioma</button>
+                        <button id="accessibility" class="Aumentar" data-lang="increaseFont">♿ Aumentar fonte</button>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="dropdown-btn" id="accessibility-btn" data-lang="accessibility">Acessibilidade</button>
+                        <div class="dropdown-content" id="accessibility-menu">
+                            <button id="increase-font" data-lang="increaseFont">Aumentar fonte</button>
+                            <button id="decrease-font" data-lang="decreaseFont">Diminuir fonte</button>
+                            <button id="reset-font" data-lang="resetFont">Fonte padrão</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <script src="./JS/script.js"></script>
+    
+    <main class="conteudo">
+
+        <!-- GUIA RÁPIDO -->
+        <section class="guia-rapido">
+            <h2 data-lang="helpTitle">Onde Procurar Ajuda?</h2>
+            <div class="guia-cards">
+                <div class="guia-card">
+                    <h3 data-lang="ubsTitle">🏥 UBS</h3>
+                    <p data-lang="ubsDescription">Sintomas leves, consultas de rotina, vacinação, acompanhamento de doenças crônicas.</p>
+                </div>
+                <div class="guia-card">
+                    <h3 data-lang="upaTitle">🚑 UPA</h3>
+                    <p data-lang="upaDescription">Emergências, febre alta persistente, dores intensas, acidentes, fraturas.</p>
+                </div>
+                <div class="guia-card">
+                    <h3 data-lang="susTitle">📱 SUS Digital</h3>
+                    <p data-lang="susDescription">Agendamentos online, carteira de vacinação digital, histórico médico.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVIÇOS (ACCORDION) -->
+        <section class="servicos-container">
+            <h2 data-lang="servicesTitle">Serviços Oferecidos</h2>
+
+            <div class="accordion">
+                <button class="accordion-btn" data-lang="ubsButton">UBS – Unidade Básica de Saúde</button>
+                <div class="accordion-content">
+                    <ul>
+                        <li data-lang="consultations">🩺 Consultas com clínico geral e especialistas</li>
+                        <li data-lang="vaccination">💉 Vacinação</li>
+                        <li data-lang="routineExams">🧪 Exames de rotina</li>
+                        <li data-lang="chronicCare">❤️‍🩹 Acompanhamento de hipertensão e diabetes</li>
+                        <li><button onclick="abrirMapa('UBS')" data-lang="viewOnMap">📍 Ver no Mapa</button></li>
+                    </ul>
+                </div>
+
+                <button class="accordion-btn" data-lang="upaButton">UPA – Unidade de Pronto Atendimento</button>
+                <div class="accordion-content">
+                    <ul>
+                        <li data-lang="emergencyCare">⏱️ Atendimento emergencial 24h</li>
+                        <li data-lang="patientStabilization">🚑 Estabilização de pacientes</li>
+                        <li data-lang="minorSurgery">🩹 Pequenas cirurgias e suturas</li>
+                        <li data-lang="quickExams">🧾 Exames rápidos e internação curta</li>
+                        <li><button onclick="abrirMapa('UPA')" data-lang="viewOnMap">📍 Ver no Mapa</button></li>
+                    </ul>
+                </div>
+
+                <button class="accordion-btn" data-lang="susDigitalButton">SUS Digital</button>
+                <div class="accordion-content">
+                    <ul>
+                        <li data-lang="appointmentScheduling">📅 Agendamento de consultas</li>
+                        <li data-lang="digitalVaccinationCard">📲 Carteira de vacinação digital</li>
+                        <li data-lang="examTracking">📑 Acompanhamento de exames e receitas</li>
+                        <li><a href="https://www.gov.br/saude/pt-br" target="_blank" data-lang="officialWebsite">🌐 Acessar site oficial</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <script src="./JS/scriptAccordions.js"></script>
+        </section>
+
+        <br><br>
+
+        <section class="feedback-servicos">
+            <h3 data-lang="feedbackQuestion">Você conseguiu encontrar o serviço que procurava?</h3>
+            <div class="feedback-buttons">
+                <button class="btn-feedback" data-feedback="sim" data-lang="yesButton">✅ Sim</button>
+                <button class="btn-feedback" data-feedback="nao" data-lang="noButton">❌ Não</button>
+                <button class="btn-feedback" data-feedback="parcial" data-lang="partialButton">⚠️ Parcialmente</button>
+            </div>
+            <script src="./JS/scriptAlert.js"></script>
+            <div id="alert-container"></div>
+        </section>
+
+        <!-- Rodapé -->
+    <footer class="footer">
+        <div class="footerContainer">
+            <!-- Logo e nome -->
+            <div class="footerBrand">
+                <img src="./Img/logo-footer.png" alt="Bem Estar 360" class="footerLogo">
+                <span data-lang="footerBrand">Bem-Estar 360</span>
+            </div>
+
+            <div class="footerLinks">
+                <ul>
+                    <li><a href="./index.html" data-lang="footerHome">Home</a></li>
+                    <li><a href="./monitoramento.html" data-lang="footerMonitoring">Monitoramento</a></li>
+                    <li><a href="./servicos.html" data-lang="footerHistory">Serviços</a></li>
+                    <li><a href="./quemSomos.html" data-lang="footerServices">Quem Somos</a></li>
+                    <li><a href="" data-lang="footerFaq">FAQ</a></li>
+                </ul>
+            </div>
+
+            <!-- Contato -->
+            <div class="footerContato">
+                <h4 data-lang="footerContactTitle">Contato</h4>
+                <p data-lang="footerEmail">Email: contato@bemestar360.com</p>
+                <p data-lang="footerPhone">Telefone: (11) 1234-5678</p>
+                <div class="footerSocials">
+                    <a href="#"><img src=".//Img/face_icon.png" alt="Facebook"></a>
+                    <a href="#"><img src="./Img/insta_icon.webp" alt="Instagram"></a>
+                    <a href="#"><img src="./Img/X_icon.svg.png" alt="Twitter"></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="footerBottom">
+            <p data-lang="footerCopy">&copy; 2025 Bem-Estar 360. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+        <!-- JS do menu mobile -->
+        <script>
+            const toggle = document.querySelector(".menu-toggle");
+            const menu = document.querySelector(".Navegacao ul");
+
+            toggle.addEventListener("click", () => {
+                menu.classList.toggle("show");
+            });
+        </script>
+</body>
+
+</html>
