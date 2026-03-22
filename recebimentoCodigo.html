@@ -4,7 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Bem-Estar 360 - Login (Recibimento de Código de confirmação)</title>
+=======
+    <title>Bem-Estar 360 - Login</title>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
 
     <!-- CSS externo -->
     <link rel="stylesheet" href="Css/estiloForgot.css">
@@ -18,6 +22,7 @@
     <!-- Header -->
     <header class="TopoSite">
         <div class="Logo">
+<<<<<<< HEAD
             <img class="ImgLogo" src="Img/bemEstar.webp" alt="Logo Bem Estar 360">
         </div>
 
@@ -43,6 +48,52 @@
         </nav>
     </header>
 
+=======
+            <img id="logo-site" class="ImgLogo" src="./Img/logo-clara.png" alt="Logo do site Bem-Estar 360">
+        </div>
+
+          <button class="menu-toggle"
+            aria-label="Abrir menu de navegação"
+            aria-controls="menu-principal"
+            aria-expanded="false">☰</button>
+
+        <nav class="Navegacao">
+            <ul>
+                <li><a href="./index.html" data-lang="home">Home</a></li>
+                <li><a href="./monitoramento.html" data-lang="monitoring">Monitoramento</a></li>
+                <li><a href="./servicos.html">Serviços</a></li>
+                <li><a href="./quemSomos.html" data-lang="about">Quem somos</a></li>
+                <li><a href="./login.html">Login</a></li>
+
+                <!-- Menu de Configurações -->
+                <li class="config-menu">
+                    <button id="config-btn" aria-haspopup="true" aria-expanded="false">⚙️</button>
+
+                    <div class="dropdown" role="menu">
+                        <button id="toggle-theme">🌙 Modo Escuro</button>
+                        <button id="change-lang">🌎 Trocar Idioma</button>
+                        <button id="accessibility" class="Aumentar">♿ Aumentar fonte</button>
+                    </div>
+
+
+                    <div class="dropdown">
+                        <button class="dropdown-btn" id="accessibility-btn">
+                            Acessibilidade
+                        </button>
+                        <div class="dropdown-content" id="accessibility-menu">
+                            <button id="increase-font">Aumentar fonte</button>
+                            <button id="decrease-font">Diminuir fonte</button>
+                            <button id="reset-font">Fonte padrão</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <script src="./JS/script.js"></script>
+
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
     <main class="forgot-main">
         <div class="forgot-container">
             <h1>Recuperar Senha</h1>
@@ -70,16 +121,27 @@
     
 
 
+<<<<<<< HEAD
     <!-- Footer -->
     <footer class="footer">
         <div class="footerContainer">
             <div class="footerBrand">
                 <img src="Img/logo_BemEstar360.png" alt="Bem Estar 360" class="footerLogo">
                 <span>Bem-Estar 360</span>
+=======
+    <!-- Rodapé -->
+    <footer class="footer">
+        <div class="footerContainer">
+            <!-- Logo e nome -->
+            <div class="footerBrand">
+                <img src="./Img/logo-footer.png" alt="Bem Estar 360" class="footerLogo">
+                <span data-lang="footerBrand">Bem-Estar 360</span>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
             </div>
 
             <div class="footerLinks">
                 <ul>
+<<<<<<< HEAD
                     <li><a href="./index.html">Home</a></li>
                     <li><a href="./monitoramento.html">Monitoramento</a></li>
                     <li><a href="#">Histórico</a></li>
@@ -94,14 +156,37 @@
                 <p>Telefone: (11) 1234-5678</p>
                 <div class="footerSocials">
                     <a href="#"><img src="./Img/face_icon.png" alt="Facebook"></a>
+=======
+                    <li><a href="./index.html" data-lang="footerHome">Home</a></li>
+                    <li><a href="./monitoramento.html" data-lang="footerMonitoring">Monitoramento</a></li>
+                    <li><a href="./servicos.html" data-lang="footerHistory">Serviços</a></li>
+                    <li><a href="./quemSomos.html" data-lang="footerServices">Quem Somos</a></li>
+                    <li><a href="" data-lang="footerFaq">FAQ</a></li>
+                </ul>
+            </div>
+
+            <!-- Contato -->
+            <div class="footerContato">
+                <h4 data-lang="footerContactTitle">Contato</h4>
+                <p data-lang="footerEmail">Email: contato@bemestar360.com</p>
+                <p data-lang="footerPhone">Telefone: (11) 1234-5678</p>
+                <div class="footerSocials">
+                    <a href="#"><img src=".//Img/face_icon.png" alt="Facebook"></a>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
                     <a href="#"><img src="./Img/insta_icon.webp" alt="Instagram"></a>
                     <a href="#"><img src="./Img/X_icon.svg.png" alt="Twitter"></a>
                 </div>
             </div>
         </div>
 
+<<<<<<< HEAD
         <div class="footerBottom">
             <p>&copy; 2025 Bem-Estar 360. Todos os direitos reservados.</p>
+=======
+        <!-- Copyright -->
+        <div class="footerBottom">
+            <p data-lang="footerCopy">&copy; 2025 Bem-Estar 360. Todos os direitos reservados.</p>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
         </div>
     </footer>
 

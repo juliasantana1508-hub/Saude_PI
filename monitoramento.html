@@ -4,13 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Saúde 360 - Monitoramento</title>
+=======
+    <title data-lang="title">Saúde 360 - Monitoramento</title>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="icon/icon_BemEstar360.ico">
 
     <!-- CSS externo -->
     <link rel="stylesheet" href="./Css/estiloMonitoramento.css">
+<<<<<<< HEAD
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
@@ -22,6 +27,15 @@
     <header class="TopoSite">
         <div class="Logo">
             <img class="ImgLogo" src="Img/bemEstar.webp" alt="Logo Bem Estar 360">
+=======
+</head>
+
+<body>
+  <!-- Header -->
+    <header class="TopoSite">
+        <div class="Logo">
+            <img id="logo-site" class="ImgLogo" src="./Img/logo-clara.png" alt="Logo do site Bem-Estar 360">
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
         </div>
 
         <button class="menu-toggle" aria-label="Abrir menu">☰</button>
@@ -30,6 +44,7 @@
             <ul>
                 <li><a href="./index.html" data-lang="home">Home</a></li>
                 <li><a href="./monitoramento.html" data-lang="monitoring">Monitoramento</a></li>
+<<<<<<< HEAD
                 <li><a href="./servicos.html" data-lang="services" >Serviços</a></li>
                 <li><a href="./quemSomos.html" data-lang="about">Quem somos</a></li>
                 <li><a href="./login.html" data-lang="login">Login</a></li>
@@ -41,38 +56,72 @@
                     <div class="dropdown" role="menu">
                         <button id="toggle-theme">🌙 Modo Escuro</button>
                         <button id="change-lang">🌎 Trocar Idioma</button>
+=======
+                <li><a href="./servicos.html" data-lang="services">Serviços</a></li>
+                <li><a href="./quemSomos.html" data-lang="about">Quem somos</a></li>
+                <li><a href="./login.html" data-lang="login">Login</a></li>
+                 
+                <li class="config-menu">
+                    <button id="config-btn">⚙️</button>
+                    <div class="dropdown">
+                        <button id="toggle-theme" data-lang="darkMode">🌙 Modo Escuro</button>
+                        <button id="change-lang" data-lang="changeLang">🌎 Trocar Idioma</button>
+                        <button id="accessibility" data-lang="accessibility">♿ Acessibilidade</button>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
                     </div>
                 </li>
             </ul>
         </nav>
     </header>
 
+<<<<<<< HEAD
     <script src="script.js"></script>
     <script src="scriptTraducao.js"></script>
 
     <br><br>
+=======
+<script src="./JS/script.js"></script>
+<script src="./script_Registro/scriptMonitoramentoBatimentos.js"></script>
+
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
 
     <!-- Conteúdo principal -->
     <main class="conteudo">
         <section class="monitoramento-container">
+<<<<<<< HEAD
             <h2>Monitoramento em Tempo Real</h2>
             <div class="cards">
                 <div class="card" id="card-batimentos">
                     <h3>❤️ Batimentos</h3>
+=======
+            <h2 data-lang="monitorTitle">Monitoramento em Tempo Real</h2>
+            <div class="cards">
+                <div class="card" id="card-batimentos">
+                    <h3 data-lang="cardBatimentos1">❤️ Batimentos</h3>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
                     <p id="batimentos">-- bpm</p>
                 </div>
 
                 <div class="card" id="card-glicemia">
+<<<<<<< HEAD
                     <h3>🩸 Glicemia</h3>
+=======
+                    <h3 data-lang="cardGlicemia1">🩸 Glicemia</h3>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
                     <p id="glicemia">-- mg/dL</p>
                 </div>
 
                 <div class="card" id="card-temperatura">
+<<<<<<< HEAD
                     <h3>🌡️ Temperatura</h3>
+=======
+                    <h3 data-lang="cardTemperatura1">🌡️ Temperatura</h3>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
                     <p id="temperatura">-- °C</p>
                 </div>
 
                 <div class="card" id="card-pressao">
+<<<<<<< HEAD
                     <h3>🩺 Pressão</h3>
                     <p id="pressao">-- mmHg</p>
                 </div>
@@ -111,10 +160,24 @@
         <!-- Histórico
         <section class="historico-container">
             <h2>Histórico de Monitoramento</h2>
+=======
+                    <h3 data-lang="cardPressao1">🩺 Pressão</h3>
+                    <p id="pressao">-- mmHg</p>
+                </div>
+            </div>
+
+            
+        </section>
+
+        <!-- Histórico -->
+        <section class="historico-container">
+            <h2 data-lang="historyTitle">Histórico de Monitoramento</h2>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
             <div class="tabela-wrapper">
                 <table id="tabelaHistorico">
                     <thead>
                         <tr>
+<<<<<<< HEAD
                             <th>Data/Hora</th>
                             <th>Batimentos (bpm)</th>
                             <th>Glicemia (mg/dL)</th>
@@ -125,10 +188,23 @@
                     <tbody> -->
         <!-- Dados via JS -->
         <!-- </tbody>
+=======
+                            <th data-lang="tableDate">Data/Hora</th>
+                            <th data-lang="tableBpm">Batimentos (bpm)</th>
+                            <th data-lang="tableGlicemia">Glicemia (mg/dL)</th>
+                            <th data-lang="tableTemperatura">Temperatura (°C)</th>
+                            <th data-lang="tablePressao">Pressão (mmHg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dados via JS -->
+                    </tbody>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
                 </table>
             </div>
 
             <br><br>
+<<<<<<< HEAD
             <button class="btn-pdf" onclick="gerarPDF()">📄 Exportar PDF</button>
         </section> -->
 
@@ -153,21 +229,38 @@
 
 
 
+=======
+            <button class="btn-pdf" data-lang="exportPdf" onclick="gerarPDF()">📄 Exportar PDF</button>
+        </section>
+    </main>
+
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
     <!-- Rodapé -->
     <footer class="footer">
         <div class="footerContainer">
             <!-- Logo e nome -->
             <div class="footerBrand">
+<<<<<<< HEAD
                 <img src="Img/2.png" alt="Bem Estar 360" class="footerLogo">
 
+=======
+                <img src="./Img/logo-footer.png" alt="Bem Estar 360" class="footerLogo">
+                <span data-lang="footerBrand">Bem-Estar 360</span>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
             </div>
 
             <div class="footerLinks">
                 <ul>
                     <li><a href="./index.html" data-lang="footerHome">Home</a></li>
                     <li><a href="./monitoramento.html" data-lang="footerMonitoring">Monitoramento</a></li>
+<<<<<<< HEAD
                     <li><a href="./servicos.html" data-lang="footerServices">Serviços</a></li>
                     <li><a href="./quemSomos.html" data-lang="about">Quem somos</a></li>
+=======
+                    <li><a href="./servicos.html" data-lang="footerHistory">Serviços</a></li>
+                    <li><a href="./quemSomos.html" data-lang="footerServices">Quem Somos</a></li>
+                    <li><a href="" data-lang="footerFaq">FAQ</a></li>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
                 </ul>
             </div>
 
@@ -177,7 +270,11 @@
                 <p data-lang="footerEmail">Email: contato@bemestar360.com</p>
                 <p data-lang="footerPhone">Telefone: (11) 1234-5678</p>
                 <div class="footerSocials">
+<<<<<<< HEAD
                     <a href="#"><img src="./Img/face_icon.png" alt="Facebook"></a>
+=======
+                    <a href="#"><img src=".//Img/face_icon.png" alt="Facebook"></a>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
                     <a href="#"><img src="./Img/insta_icon.webp" alt="Instagram"></a>
                     <a href="#"><img src="./Img/X_icon.svg.png" alt="Twitter"></a>
                 </div>
@@ -186,8 +283,12 @@
 
         <!-- Copyright -->
         <div class="footerBottom">
+<<<<<<< HEAD
             <p data-lang="footerCopy" data-lang="textFooter">&copy; 2025 Bem-Estar 360. Todos os direitos reservados.
             </p>
+=======
+            <p data-lang="footerCopy">&copy; 2025 Bem-Estar 360. Todos os direitos reservados.</p>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
         </div>
     </footer>
 
@@ -201,5 +302,9 @@
         });
     </script>
 </body>
+<<<<<<< HEAD
 
 </html>
+=======
+</html>
+>>>>>>> 6defdd8be5bda1a1c9320938482137e716fd2477
