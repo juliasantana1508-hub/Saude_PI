@@ -45,12 +45,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['idLogin'] = $dados['idLogin'];
             $_SESSION['usuario'] = $dados['usuario'];
             $_SESSION['nome'] = $dados['nomeUsuario'];
-            $_SESSION['tipo'] = $dados['tipo_usuario'];
+            $_SESSION['tipo'] = strtolower(trim($dados['tipo_usuario']));
+            $_SESSION['tipo'] = strtolower(trim($dados['tipo_usuario']));
+            $_SESSION['foto'] = $dados['foto'] ?? 'Img/defaultUser.png';
             $_SESSION['foto'] = $dados['foto'] ?? 'Img/defaultUser.png';
 
-            // Redirecionar de acordo com tipo de usuário (opcional)
-            header("Location: ../../index.php");
-            exit();
+            // REDIRECIONAMENTO PELO TIPO
+if ($_SESSION['tipo'] === 'profissional') {
+    header("Location: ../../perfilProfissional.php");
+} else {
+    header("Location: ../../perfil.php");
+}
+exit();
 
         } else {
             $_SESSION['login_error'] = "Senha incorreta!";

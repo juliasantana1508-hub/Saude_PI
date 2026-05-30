@@ -24,7 +24,6 @@
     </script>
 
     <script src="./scriptContagem.js"></script>
-
     <script src="./JS/script.js"></script>
     <scritp src="scriptArmazenaDado.js"></scritp>
 
@@ -47,7 +46,7 @@
     <!-- Header -->
     <header class="TopoSite">
         <div class="Logo">
-            <img class="ImgLogo" src="Img/bemEstar.webp" alt="Logo Bem Estar 360">
+            <img class="ImgLogo" id="logoSite" src="./Img/logoBemEstar-clara.png" alt="Logo BemEstar360">
         </div>
 
         <button class="menu-toggle" aria-label="Abrir menu">
@@ -56,12 +55,12 @@
 
         <nav class="Navegacao">
             <ul>
-                <li><a href="./index.html" data-lang="home">Home</a></li>
-                <li><a href="./monitoramento.html" data-lang="monitoring">Monitoramento</a></li>
-                <li><a href="#" data-lang="history">Histórico</a></li>
-                <li><a href="#" data-lang="services">Serviços</a></li>
-                <li><a href="#" data-lang="about">Quem somos</a></li>
-
+                <li><a href="./index.php" data-lang="home">Home</a></li>
+                <li><a href="./monitoramento.php" data-lang="monitoring">Monitoramento</a></li>
+                <li><a href="./calendario.php" data-lang="calendar">Agenda</a></li>
+                <li><a href="./servicos.php" data-lang="services">Serviços</a></li>
+                <li><a href="./quemSomos.php" data-lang="about">Quem somos</a></li>
+                <li><a href="./login.php" data-lang="login">Login</a></li>
 
                 <!-- Menu Configurações -->
                 <li class="config-menu">
@@ -78,14 +77,21 @@
         <script src="script.js"></script>
     </header>
 
-    <!-- Pressão Arterial -->
-
-
+    <!--Batimentos Cardíacos-->
     <section class="registroIndicador">
         <div class="container">
-            <h1 data-lang="heartTitle">Registre os seus Batimentos Cardíacos</h1>
+            <div class="leftSide">
+            <h1>Registre os seus Batimentos Cardíacos</h1>
+            
+            <p class="descricaoIndicador">
+                    Monitorar sua frequência cardíaca regularmente ajuda na prevenção
+                    de problemas cardiovasculares e no acompanhamento da sua saúde.
+                    Registre suas medições de forma simples e acompanhe sua evolução.
+            </p>
+
             <div class="leftImg">
                 <img src="./Img/medindoBatimentosCardiacos.avif" alt="Batimentos Cardíacos">
+            </div>
             </div>
 
             <div class="rightForms">
@@ -131,14 +137,12 @@
                             data-lang-placeholder="obsPlaceholder"></textarea>
                     </div>
 
-                    <button type="submit" data-lang="saveBtn" id="salvarBatimentos">Salvar Registro</button>
+                    <button type="submit" class="btnSalvarRegistro">Salvar Registro</button>
                 </form>
                 <script src="./script_Registro/scriptRegistroBatimentos.js"></script>
             </div>
         </div>
     </section>
-
-
 
 
 
@@ -194,24 +198,22 @@
         </div>
     </section>
 
-
-
-
     <!-- Rodapé -->
     <footer class="footer">
         <div class="footerContainer">
             <!-- Logo e nome -->
             <div class="footerBrand">
-                <img src="Img/2.png" alt="Bem Estar 360" class="footerLogo">
-
+              <img src="./Img/Footer.png" alt="Bem Estar 360" class="footerLogo">
             </div>
 
             <div class="footerLinks">
                 <ul>
-                    <li><a href="./index.html" data-lang="footerHome">Home</a></li>
-                    <li><a href="./monitoramento.html" data-lang="footerMonitoring">Monitoramento</a></li>
-                    <li><a href="./servicos.html" data-lang="footerServices">Serviços</a></li>
-                    <li><a href="./quemSomos.html" data-lang="about">Quem somos</a></li>
+                    <li><a href="./index.php" data-lang="home">Home</a></li>
+                    <li><a href="./monitoramento.php" data-lang="monitoring">Monitoramento</a></li>
+                    <li><a href="./calendario.php" data-lang="calendar">Agenda</a></li>
+                    <li><a href="./servicos.php" data-lang="services">Serviços</a></li>
+                    <li><a href="./quemSomos.php" data-lang="about">Quem somos</a></li>
+                    <li><a href="./login.php" data-lang="login">Login</a></li>
                 </ul>
             </div>
 

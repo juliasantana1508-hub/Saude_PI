@@ -11,11 +11,11 @@ html {
 
 /* ==== Header ==== */
 .TopoSite {
-    background: rgb(255, 255, 255);
+    background: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1.5rem;
+    padding: 0.8rem 2rem;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -23,8 +23,9 @@ html {
 }
 
 .ImgLogo {
-    width: 95px;
+    width: 185px;
     height: auto;
+    transition: 0.3s ease;
 }
 
 .Navegacao ul {
@@ -147,11 +148,6 @@ html {
         transform: translateY(0);
     }
 }
-
-
-
-
-
 
 
 /* ==== Dark Mode ==== */
@@ -878,19 +874,10 @@ body.dark-mode .hospital-card p {
     color: #000000;
     margin-top: 8px;
 }
-
-
-
 /* BEGIN LOGIN PAGE*/
 
 
-
-
-
-
-
 /* END LOGIN PAGE*/
-
 
 /* BEGIN LOCALIZATION */
 
@@ -1061,23 +1048,6 @@ body.dark-mode .ubs-slider::-webkit-scrollbar-thumb {
 body.dark-mode .ubs-slider::-webkit-scrollbar-track {
     background-color: #2a2a2a;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* ==== START Footer ==== */

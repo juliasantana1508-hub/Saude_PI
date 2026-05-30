@@ -2,15 +2,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggleTheme = document.getElementById("toggle-theme");
 
     function setTheme(theme) {
-      if (theme === "dark") {
-        document.body.classList.add("dark-mode");
-        toggleTheme.textContent = "☀️ Modo Claro";
-      } else {
-        document.body.classList.remove("dark-mode");
-        toggleTheme.textContent = "🌙 Modo Escuro";
-      }
-      localStorage.setItem("theme", theme);
-    }
+    if (theme === "dark") {
+    document.body.classList.add("dark-mode");
+    toggleTheme.textContent = "☀️ Modo Claro";
+    logoSite.src = "./Img/logoBemEstar-escura.png";
+
+  } else {
+    document.body.classList.remove("dark-mode");
+    toggleTheme.textContent = "🌙 Modo Escuro";
+    logoSite.src = "./Img/logoBemEstar-clara.png";
+  }
+  localStorage.setItem("theme", theme);
+}
 
     // Carregar tema salvo
     setTheme(localStorage.getItem("theme") || "light");
@@ -72,22 +75,5 @@ document.addEventListener("click", (e) => {
 });
 
 /* END DARK/LIGHT MODE*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

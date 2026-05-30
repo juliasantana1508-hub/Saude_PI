@@ -2,13 +2,20 @@
 session_start();
 include("php/config/conexao.php");
 
-$logado = isset($_SESSION['idLogin']);
+/* VERIFICA LOGIN */
+if (!isset($_SESSION['idLogin'])) {
 
-if (!$logado) {
     header("Location: login.html");
     exit;
 }
 
+if ($_SESSION['tipo'] !== 'usuario') {
+
+    header("Location: index.php");
+    exit;
+}
+
+/* ID USUÁRIO */
 $id = $_SESSION['idUsuario'];
 
 $stmt = $conn->prepare("
@@ -23,7 +30,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $usuario = $result->fetch_assoc();
 
-
 $nome = $usuario['nomeUsuario'] ?? '';
 $email = $usuario['emailUsuario'] ?? '';
 $telefone = $usuario['telefoneUsuario'] ?? '';
@@ -37,9 +43,6 @@ $doencasCronicas = isset($usuario['doencasCronicas']) ? htmlspecialchars($usuari
 
 $contatoEmergencia = htmlspecialchars($usuario['contatoEmergencia'] ?? '');
 $telefoneEmergencia = htmlspecialchars($usuario['telefoneEmergencia'] ?? '');
-
-
-
 
 
 if (empty($usuario['codigoVinculo'])) {
@@ -88,32 +91,26 @@ if (isset($_GET['erro'])): ?>
     </script>
 <?php endif;
 
-
-
-
 $stmtConvites = $conn->prepare("
     SELECT 
         c.idConvite,
         c.validadeConvite,
         c.statusConvite,
-        f.nomeFamilia,
         u.nomeUsuario
     FROM tblConvite c
-    INNER JOIN tblUsuario u 
-        ON u.idUsuario = c.Responsavel_idResponsavel
-    LEFT JOIN tblFamiliaUsuario fu
-        ON fu.Usuario_idUsuario = c.Usuario_idUsuario
-    LEFT JOIN tblFamilia f
-        ON f.idFamilia = fu.Familia_idFamilia
+    INNER JOIN tblResponsavel r
+        ON r.idResponsavel = c.Responsavel_idResponsavel
+    INNER JOIN tblUsuario u
+        ON u.idUsuario = r.Login_Usuario_idUsuario
     WHERE c.Usuario_idUsuario = ?
-    AND c.statusConvite = 'pendente'
+    AND c.statusConvite = 'PENDENTE'
 ");
 
 $stmtConvites->bind_param("i", $id);
 $stmtConvites->execute();
-
 $resultConvites = $stmtConvites->get_result();
 $totalConvites = $resultConvites->num_rows;
+$resultConvites->data_seek(0);
 
 $stmtFamilias = $conn->prepare("
     SELECT DISTINCT
@@ -131,10 +128,58 @@ $stmtFamilias->execute();
 $resultFamilias = $stmtFamilias->get_result();
 $temFamilias = $resultFamilias->num_rows > 0;
 $totalFamilias = $resultFamilias->num_rows;
+
+$stmtResp = $conn->prepare("
+    SELECT idResponsavel
+    FROM tblResponsavel
+    WHERE Login_Usuario_idUsuario = ?
+");
+
+$stmtResp->bind_param("i", $id);
+$stmtResp->execute();
+
+$resultResp = $stmtResp->get_result();
+$responsavel = $resultResp->fetch_assoc();
+$idResponsavel = $responsavel['idResponsavel'] ?? null;
+
+
+$stmtHistorico = $conn->prepare("
+    SELECT
+        c.statusConvite,
+        c.validadeConvite,
+        u.nomeUsuario,
+        f.nomeFamilia
+    FROM tblConvite c
+    INNER JOIN tblUsuario u
+        ON u.idUsuario = c.Usuario_idUsuario
+    LEFT JOIN tblFamilia f
+        ON f.idFamilia = c.Familia_idFamilia
+    WHERE c.Responsavel_idResponsavel = ?
+    ORDER BY c.idConvite DESC
+");
+
+$stmtHistorico->bind_param("i", $idResponsavel);
+$stmtHistorico->execute();
+
+$resultHistorico = $stmtHistorico->get_result();
+$totalHistorico = $resultHistorico->num_rows;
+
+
+$sqlMedicamentos = "
+SELECT *
+FROM tblmedicamento
+WHERE Usuario_idUsuario = ?
+AND ativo = 1
+ORDER BY horario ASC
+";
+
+$stmtMedicamentos = $conn->prepare($sqlMedicamentos);
+$stmtMedicamentos->bind_param("i", $id);
+$stmtMedicamentos->execute();
+
+$medicamentos = $stmtMedicamentos->get_result();
+
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -143,6 +188,10 @@ $totalFamilias = $resultFamilias->num_rows;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bem-Estar 360 - Login</title>
+
+
+    <!-- API (Usabilidade) -->
+    <script src="https://seeb-widget.pages.dev/widget.js" defer></script>
 
     <!-- CSS externo -->
     <link rel="stylesheet" href="Css/estilo.css">
@@ -157,27 +206,25 @@ $totalFamilias = $resultFamilias->num_rows;
     <!-- Header -->
     <header class="TopoSite">
         <div class="Logo">
-            <img class="ImgLogo" src="Img/bemEstar.webp" alt="Logo Bem Estar 360">
+            <img class="ImgLogo" id="logoSite" src="./Img/logoBemEstar-clara.png" alt="Logo BemEstar360">
         </div>
 
         <button class="menu-toggle" aria-label="Abrir menu">☰</button>
 
         <nav class="Navegacao">
             <ul>
-                <li><a href="./index.html" data-lang="home">Home</a></li>
-                <li><a href="./monitoramento.html" data-lang="monitoring">Monitoramento</a></li>
-                <li><a href="./servicos.html" data-lang="services">Serviços</a></li>
-                <li><a href="./quemSomos.html" data-lang="about">Quem somos</a></li>
+                <li><a href="./index.php" data-lang="home">Home</a></li>
+                <li><a href="./monitoramento.php" data-lang="monitoring">Monitoramento</a></li>
+                <li><a href="./calendario.php" data-lang="">Agenda</a></li>
+                <li><a href="./servicos.php" data-lang="services">Serviços</a></li>
+                <li><a href="./quemSomos.php" data-lang="about">Quem somos</a></li>
 
                 <?php if ($logado): ?>
-
                     <li class="perfil-menu">
                         <a href="/Saude_PI_DSM-main/perfil.php" id="perfil-btn" class="perfil-link">
                             <img src="<?= $foto ?>" alt="Foto de perfil" class="foto-perfil">
                             <span class="nome-perfil"><?= $nome ?></span>
                         </a>
-
-
                     </li>
                     <button id="btnNotificacao" class="notificacao-btn">
                         <img id="iconeNotificacao" src="Img/Corres_Fechada.png" alt="Notificações" class="Notificacao">
@@ -379,7 +426,6 @@ $totalFamilias = $resultFamilias->num_rows;
             alert('Código copiado!');
         }
 
-
         // Validação código (Relacionamento)
         window.addEventListener("DOMContentLoaded", function () {
 
@@ -406,12 +452,9 @@ $totalFamilias = $resultFamilias->num_rows;
                     }
                 });
             }
-
             renderizarTags("alergia");
             renderizarTags("doenca");
         });
-
-
 
         const campoTelefone = document.getElementById("telefone");
         const campoCpf = document.getElementById("cpf");
@@ -419,9 +462,7 @@ $totalFamilias = $resultFamilias->num_rows;
         /* TELEFONE */
         document.getElementById("telefone").addEventListener("input", function (e) {
             let v = e.target.value.replace(/\D/g, "");
-
             if (v.length > 11) v = v.slice(0, 11);
-
             if (v.length > 10) {
                 v = v.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
             } else if (v.length > 6) {
@@ -432,9 +473,6 @@ $totalFamilias = $resultFamilias->num_rows;
 
             e.target.value = v;
         });
-
-
-
 
         // Verifica Senha
         const formPerfil = document.querySelector('form[action="php/usuario/updatePerfil.php"]');
@@ -450,7 +488,6 @@ $totalFamilias = $resultFamilias->num_rows;
 
             // se começou preencher senha, precisa confirmar
             if (senha !== "" || confirmacao !== "") {
-
                 if (senha === "" || confirmacao === "") {
                     e.preventDefault();
                     erroSenha.textContent = "Preencha os dois campos para alterar a senha.";
@@ -516,18 +553,28 @@ $totalFamilias = $resultFamilias->num_rows;
 
                     <div class="menu">
                         <a href="#dados-pessoais">Dados Pessoais</a>
-                        <a href="#dados-medicos">Dados Médicos</a>
+
                         <a href="#emergencia">Emergência e Responsável</a>
                         <a href="#endereco">Endereço</a>
                         <a href="#seguranca">Segurança</a>
                     </div>
                 </details>
 
-                <details class="sidebar-details">
+                <details open class="sidebar-details">
+                    <summary>Saúde</summary>
+
+                    <div class="menu">
+                        <a href="#dados-medicos">Dados Médicos</a>
+                        <a href="#dados-pessoais">Remédios</a>
+                        <a href="#dados-pessoais">Relatórios</a>
+                    </div>
+                </details>
+
+                <details open class="sidebar-details">
                     <summary>Relacionamento</summary>
 
                     <div class="menu">
-                        <a href="#relacionamento">Adicionar Dependente</a>
+                        <a href="#relacionamento">Família</a>
                         <a href="#historico-convites">Histórico</a>
                     </div>
                 </details>
@@ -541,7 +588,6 @@ $totalFamilias = $resultFamilias->num_rows;
         </aside>
 
         <main class="content">
-
             <!-- BLOCO INFORMAÇÕES -->
             <details class="main-accordion" open>
                 <summary>Informações Pessoais</summary>
@@ -563,8 +609,6 @@ $totalFamilias = $resultFamilias->num_rows;
                                     <input type="email" name="email" value="<?= $email ?>">
                                 </div>
 
-
-
                                 <!-- ARRUMAR MASCARA DO TELEFONE E CPF -->
 
                                 <div class="field">
@@ -580,99 +624,79 @@ $totalFamilias = $resultFamilias->num_rows;
                             </div>
                         </details>
 
+                        <!-- ========================================= -->
+                        <!-- DADOS MÉDICOS -->
+                        <!-- ========================================= -->
+
                         <details id="dados-medicos" class="accordion-item">
                             <summary>Dados Médicos</summary>
-
-                            <div class="info-box">
-                                <div class="info-icon">i</div>
-
-                                <div class="info-text">
-                                    <strong>Como adicionar informações médicas</strong>
-                                    <p>
-                                        Digite uma alergia ou doença, clique em <b>Adicionar</b> para incluir
-                                        na lista e, ao finalizar todas as alterações, clique em
-                                        <b>Salvar Alterações</b>. É possível excluir qualquer alteração antes e depois
-                                        de clicar em Salvar alterações.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="grid">
-
-                                <!-- Tipo sanguíneo -->
-                                <div class="field">
-                                    <label>Tipo sanguíneo</label>
-                                    <select name="tipoSanguineo">
-                                        <option value="">Selecione</option>
-                                        <?php
-                                        $tipos = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-                                        foreach ($tipos as $tipo) {
-                                            $selected = ($tipoSanguineo == $tipo) ? 'selected' : '';
-                                            echo "<option value='$tipo' $selected>$tipo</option>";
-                                        }
-                                        ?>
-                                    </select>
+                            <div class="sub-section-spacing">
+                                <div class="info-box">
+                                    <div class="info-icon">i</div>
+                                    <div class="info-text">
+                                        <strong>Informações médicas do paciente</strong>
+                                        <p>
+                                            Adicione alergias, doenças crônicas e informações
+                                            importantes para melhorar seu acompanhamento clínico
+                                            e auxiliar profissionais de saúde durante consultas.
+                                        </p>
+                                    </div>
                                 </div>
 
+                                <div class="grid">
+                                    <!-- Tipo sanguíneo -->
+                                    <div class="field">
+                                        <label>Tipo sanguíneo</label>
+                                        <select name="tipoSanguineo">
+                                            <option value="">Selecione</option>
+                                            <?php
+                                            $tipos = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-                                <!-- ALERGIAS -->
-                                <div class="field full-width">
-                                    <label>Alergias</label>
+                                            foreach ($tipos as $tipo) {
 
-                                    <div class="input-group-tag">
-                                        <input type="text" id="inputAlergia" placeholder="Digite alergia">
-                                        <button type="button" onclick="adicionarTag('alergia')">
-                                            Adicionar
-                                        </button>
+                                                $selected = ($tipoSanguineo == $tipo)
+                                                    ? 'selected'
+                                                    : '';
+                                                echo "<option value='$tipo' $selected>$tipo</option>";
+                                            }
+                                            ?>
+                                        </select>
                                     </div>
 
-                                    <div id="listaAlergias" class="tags-list"></div>
+                                    <!-- ALERGIAS -->
+                                    <div class="field full-width">
+                                        <label>Alergias</label>
+                                        <div class="input-group-tag">
+                                            <input type="text" id="inputAlergia" placeholder="Digite uma alergia">
+                                            <button type="button" onclick="adicionarTag('alergia')">
+                                                Adicionar
+                                            </button>
 
-                                    <input type="hidden" name="alergias" id="hiddenAlergias"
-                                        value="<?= isset($alergias) ? $alergias : '' ?>">
-                                </div>
+                                        </div>
 
-                                <!-- DOENÇAS -->
-                                <div class="field full-width">
-                                    <label>Doenças Crônicas</label>
-
-                                    <div class="input-group-tag">
-                                        <input type="text" id="inputDoenca" placeholder="Digite doença">
-                                        <button type="button" onclick="adicionarTag('doenca')">
-                                            Adicionar
-                                        </button>
+                                        <div id="listaAlergias" class="tags-list"></div>
+                                        <input type="hidden" name="alergias" id="hiddenAlergias"
+                                            value="<?= isset($alergias) ? $alergias : '' ?>">
                                     </div>
 
-                                    <div id="listaDoencas" class="tags-list"></div>
-
-                                    <input type="hidden" name="doencasCronicas" id="hiddenDoencas"
-                                        value="<?= isset($doencasCronicas) ? $doencasCronicas : '' ?>">
+                                    <!-- DOENÇAS -->
+                                    <div class="field full-width">
+                                        <label>Doenças Crônicas</label>
+                                        <div class="input-group-tag">
+                                            <input type="text" id="inputDoenca" placeholder="Digite uma doença">
+                                            <button type="button" onclick="adicionarTag('doenca')">
+                                                Adicionar
+                                            </button>
+                                        </div>
+                                        <div id="listaDoencas" class="tags-list"></div>
+                                        <input type="hidden" name="doencasCronicas" id="hiddenDoencas"
+                                            value="<?= isset($doencasCronicas) ? $doencasCronicas : '' ?>">
+                                    </div>
                                 </div>
                             </div>
                         </details>
 
-
-                        <div id="modalExcluir" class="modal-excluir">
-                            <div class="modal-content-excluir">
-                                <h3>Confirmar exclusão</h3>
-                                <p>Deseja realmente excluir esta informação?</p>
-
-                                <div class="modal-buttons">
-                                    <button type="button" onclick="confirmarExclusao()">Confirmar</button>
-                                    <button type="button" onclick="fecharModal()">Cancelar</button>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-
-
-
-
-
-
-                        <details id="emergencia" class="accordion-item">
+                        <!-- <details id="emergencia" class="accordion-item">
                             <summary>Emergência e Responsável</summary>
 
                             <div class="grid">
@@ -681,7 +705,7 @@ $totalFamilias = $resultFamilias->num_rows;
                                     <input type="text" name="contatoEmergencia">
                                 </div>
                             </div>
-                        </details>
+                        </details> -->
 
                         <details id="endereco" class="accordion-item">
                             <summary>Endereço</summary>
@@ -698,10 +722,7 @@ $totalFamilias = $resultFamilias->num_rows;
 
 
                         <div class="security-sections">
-
                             <!-- CONTA -->
-
-
                             <details id="seguranca" class="accordion-item">
                                 <summary>Segurança e Conta</summary>
 
@@ -747,7 +768,6 @@ $totalFamilias = $resultFamilias->num_rows;
                                                 A senha só será alterada caso os dois campos estejam preenchidos
                                                 corretamente.
                                             </small>
-
                                         </div>
                                     </details>
 
@@ -781,31 +801,162 @@ $totalFamilias = $resultFamilias->num_rows;
                             <button class="save-btn" type="submit">
                                 Salvar Alterações
                             </button>
+                        </div>
+                    </form>
+
+            </details>
 
 
+            <details id="saude-tratamentos" class="main-accordion">
+                <summary>Saúde e Tratamentos</summary>
+                <div class="card">
+                    <!-- HEADER -->
+                    <div class="health-banner">
 
+                        <div class="health-info">
+                            <h3>🏥 Central de Saúde</h3>
 
+                            <p>
+                                Gerencie suas informações médicas, acompanhe tratamentos,
+                                medicamentos prescritos e mantenha seu histórico de saúde
+                                sempre atualizado.
+                            </p>
+                        </div>
+
+                        <div class="health-status">
+                            <span class="status-circle"></span>
+                            Monitoramento ativo
+                        </div>
+
+                    </div>
+
+                    <!-- ========================================= -->
+                    <!-- MEDICAMENTOS -->
+                    <!-- ========================================= -->
+
+                    <details id="medicamentos" class="accordion-item" open>
+                        <summary>💊 Controle de Medicamentos</summary>
+                        <div class="sub-section-spacing">
+                            <div class="section-description">
+                                Visualize os medicamentos prescritos pelos profissionais
+                                responsáveis e registre sua rotina de tratamento.
+                            </div>
+
+                            <div class="medicamentos-lista">
+
+                                <?php while ($med = $medicamentos->fetch_assoc()): ?>
+
+                                    <div class="medicamento-item <?= $registroHoje ? 'tomado' : '' ?>">
+
+                                        <div class="medicamento-topo">
+
+                                            <div>
+
+                                                <h4>
+                                                    <?= htmlspecialchars($med['nomeMedicamento']) ?>
+                                                </h4>
+
+                                                <small>
+                                                    Prescrito por
+                                                    <?= htmlspecialchars($med['medicoResponsavel']) ?>
+                                                </small>
+
+                                            </div>
+
+                                            <span class="medicamento-horario">
+                                                <?= substr($med['horario'], 0, 5) ?>
+                                            </span>
+
+                                        </div>
+
+                                        <div class="medicamento-body">
+
+                                            <div class="medicamento-tags">
+
+                                                <span>
+                                                    <?= $med['dosagem'] ?>
+                                                </span>
+
+                                                <span>
+                                                    <?= $med['viaAdministracao'] ?>
+                                                </span>
+
+                                            </div>
+
+                                            <p class="medicamento-observacao">
+                                                <?= $med['observacao'] ?>
+                                            </p>
+
+                                        </div>
+
+                                        <div class="medicamento-actions">
+
+                                            <?php if (!$registroHoje): ?>
+
+                                                <button class="btn-tomado" onclick="marcarMedicamento(
+                    <?= $med['idMedicamento'] ?>,
+                    'tomado'
+                )">
+                                                    ✅ Marcar como tomado
+                                                </button>
+
+                                            <?php else: ?>
+
+                                                <button class="btn-tomado disabled">
+                                                    ✔ Medicamento tomado
+                                                </button>
+
+                                            <?php endif; ?>
+
+                                        </div>
+
+                                    </div>
+
+                                <?php endwhile; ?>
+
+                            </div>
 
                         </div>
 
+                    </details>
 
+                </div>
             </details>
 
+            <script>
+                function marcarMedicamento(idMedicamento, status) {
+                    fetch(
+                        'php/medicamento/marcarMedicamento.php',
+                        {
+                            method: 'POST',
 
-            </details>
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
 
+                            body:
+                                `idMedicamento=${idMedicamento}&status=${status}`
+                        }
+                    )
+                        .then(res => res.text())
+                        .then(res => {
 
+                            alert(res);
+
+                            location.reload();
+
+                        });
+                }
+            </script>
             <!-- BLOCO RELACIONAMENTO -->
             <details id="relacionamento" class="main-accordion">
                 <summary>Relacionamento</summary>
 
 
                 <?php if (!$temFamilias): ?>
-
                     <div id="estadoInicial" class="empty-family-box">
                         <h3>Crie seu relacionamento familiar</h3>
                         <p>Monte sua família e convide membros.</p>
-
                         <button type="button" onclick="abrirModalNovaFamilia()">
                             + Criar família
                         </button>
@@ -814,17 +965,14 @@ $totalFamilias = $resultFamilias->num_rows;
                 <?php else: ?>
 
                     <div class="card">
-
                         <details id="familias" class="accordion-item" open>
                             <summary>Minhas Famílias</summary>
-
                             <?php while ($familia = $resultFamilias->fetch_assoc()): ?>
-
                                 <?php
                                 $idFamilia = $familia['idFamilia'];
-
                                 $stmtMembros = $conn->prepare("
                 SELECT
+                    u.idUsuario,    
                     u.nomeUsuario,
                     u.foto,
                     fu.papel,
@@ -833,6 +981,12 @@ $totalFamilias = $resultFamilias->num_rows;
                 INNER JOIN tblUsuario u
                     ON u.idUsuario = fu.Usuario_idUsuario
                 WHERE fu.Familia_idFamilia = ?
+ORDER BY 
+    CASE 
+        WHEN fu.statusMembro = 'ativo' THEN 0
+        ELSE 1
+    END,
+    fu.papel
             ");
 
                                 $stmtMembros->bind_param("i", $idFamilia);
@@ -845,83 +999,120 @@ $totalFamilias = $resultFamilias->num_rows;
                                     <details class="familia-accordion">
                                         <summary class="familia-header">
 
-                                            <h3><?= htmlspecialchars($familia['nomeFamilia']) ?></h3>
+                                            <h3>
+                                                <p><?= htmlspecialchars($familia['nomeFamilia']) ?></p>
+                                            </h3>
 
                                             <div class="familia-actions" onclick="event.stopPropagation()">
-                                                <button type="button" onclick="abrirModalConfigFamilia(<?= $idFamilia ?>,
+
+                                                <div class="familia-actions" onclick="event.stopPropagation()">
+                                                    <button type="button" class="btn-config" onclick="abrirModalConfigFamili(<?= $idFamilia ?>,
                                                     '<?= htmlspecialchars($familia['nomeFamilia'], ENT_QUOTES) ?>'
                                                          )">
-                                                    ⚙️
+                                                        ⚙️
+                                                    </button>
+                                                </div>
+
+                                                <button type="button" class="btn-gerenciar"
+                                                    onclick="abrirModalGerenciarMembros(<?= $idFamilia ?>)">
+                                                    👥
                                                 </button>
                                             </div>
-
                                         </summary>
 
                                         <div class="familia-content">
-
                                             <!-- RESPONSÁVEIS -->
                                             <div class="membros-section">
-                                                <h4>Responsáveis</h4>
+                                                <div class="section-header-membros">
+                                                    <h4>Responsáveis</h4>
+
+                                                    <button class="btn-add-membro"
+                                                        onclick="abrirModalAdicionarResponsavel(<?= $idFamilia ?>)">
+                                                        + Adicionar
+                                                    </button>
+                                                </div>
 
                                                 <div class="membros-grid">
+
                                                     <?php
                                                     mysqli_data_seek($membros, 0);
+
                                                     while ($membro = $membros->fetch_assoc()):
+
                                                         if ($membro['papel'] !== 'responsavel')
                                                             continue;
 
-                                                        $fotoMembro = !empty($membro['foto']) && file_exists("uploads/" . $membro['foto'])
+                                                        $fotoMembro =
+                                                            !empty($membro['foto']) &&
+                                                            file_exists("uploads/" . $membro['foto'])
                                                             ? "uploads/" . $membro['foto']
                                                             : "Img/defaultUser.png";
                                                         ?>
 
+                                                        <div class="membro-card modern-card <?= $membro['statusMembro'] ?>">
 
-                                                        <div
-                                                            class="membro-card <?= $membro['statusMembro'] === 'pendente' ? 'pending' : '' ?>">
+                                                            <div class="membro-status"></div>
+
                                                             <img src="<?= $fotoMembro ?>">
-                                                            <span><?= htmlspecialchars($membro['nomeUsuario']) ?></span>
-                                                            <small><?= ucfirst($membro['papel']) ?></small>
+
+                                                            <div class="membro-info">
+                                                                <span>
+                                                                    <?= htmlspecialchars($membro['nomeUsuario']) ?>
+                                                                </span>
+
+                                                                <small>
+                                                                    Responsável
+                                                                </small>
+                                                            </div>
+
                                                         </div>
 
-                                                        <div class="add-dependente"
-                                                            onclick="abrirModalAdicionarResponsavel(<?= $idFamilia ?>)">
-                                                            + Adicionar responsável
-                                                        </div>
                                                     <?php endwhile; ?>
+
                                                 </div>
+
                                             </div>
 
                                             <!-- DEPENDENTES -->
                                             <div class="membros-section">
-                                                <h4>Dependentes</h4>
+                                                <div class="section-header-membros">
+                                                    <h4>Dependentes</h4>
+                                                    <button class="btn-add-membro"
+                                                        onclick="abrirModalAdicionarDependente(<?= $idFamilia ?>)">
+                                                        + Adicionar
+                                                    </button>
+
+                                                </div>
 
                                                 <div class="membros-grid">
                                                     <?php
                                                     mysqli_data_seek($membros, 0);
+
                                                     while ($membro = $membros->fetch_assoc()):
+
                                                         if ($membro['papel'] !== 'dependente')
                                                             continue;
 
-                                                        $fotoMembro = !empty($membro['foto']) && file_exists("uploads/" . $membro['foto'])
+                                                        $fotoMembro =
+                                                            !empty($membro['foto']) &&
+                                                            file_exists("uploads/" . $membro['foto'])
                                                             ? "uploads/" . $membro['foto']
                                                             : "Img/defaultUser.png";
                                                         ?>
-                                                        <div
-                                                            class="membro-card <?= $membro['statusMembro'] === 'pendente' ? 'pending' : '' ?>">
+
+                                                        <div class="membro-card modern-card dependente-card"
+                                                            onclick="abrirModalDependente(<?= $membro['idUsuario'] ?>)">
+                                                            <div class="membro-alerta normal"></div>
                                                             <img src="<?= $fotoMembro ?>">
-                                                            <span><?= htmlspecialchars($membro['nomeUsuario']) ?></span>
-                                                            <small><?= ucfirst($membro['papel']) ?></small>
+                                                            <div class="membro-info">
+                                                                <span> <?= htmlspecialchars($membro['nomeUsuario']) ?></span>
+                                                                <small> Clique para visualizar</small>
+                                                            </div>
+                                                            <div class="membro-hover">👁 Visualizar</div>
                                                         </div>
                                                     <?php endwhile; ?>
-
-                                                    <div class="add-dependente"
-                                                        onclick="abrirModalAdicionarDependente(<?= $idFamilia ?>)">
-                                                        + Adicionar dependente
-                                                    </div>
                                                 </div>
                                             </div>
-
-                                        </div>
                                     </details>
                                 </div>
 
@@ -934,183 +1125,167 @@ $totalFamilias = $resultFamilias->num_rows;
                             <?php endif; ?>
 
                         </details>
+
+
+                        <details class="accordion-item">
+                            <summary>Histórico de Convites</summary>
+
+                            <div class="history-list">
+
+                                <?php if ($totalHistorico > 0): ?>
+                                    <?php while ($convite = $resultHistorico->fetch_assoc()): ?>
+
+                                        <?php
+                                        $status = strtolower($convite['statusConvite']);
+
+                                        $classe = match ($status) {
+                                            'aceito' => 'accepted',
+                                            'recusado' => 'refused',
+                                            default => 'pending'
+                                        };
+
+                                        $texto = match ($status) {
+                                            'aceito' => 'Aceito',
+                                            'recusado' => 'Recusado',
+                                            default => 'Pendente'
+                                        };
+                                        ?>
+
+                                        <div class="history-item <?= $classe ?>">
+                                            <div>
+                                                <strong>
+                                                    <?= htmlspecialchars($convite['nomeUsuario']) ?>
+                                                </strong>
+                                                <br>
+                                                <small>
+                                                    Família:
+                                                    <?= !empty($convite['nomeFamilia'])
+                                                        ? htmlspecialchars($convite['nomeFamilia'])
+                                                        : 'Convite antigo' ?>
+                                                    <br>
+                                                    <?= date('d/m/Y', strtotime($convite['validadeConvite'])) ?>
+                                                </small>
+                                            </div>
+
+                                            <span>
+                                                <?= $texto ?>
+                                            </span>
+                                        </div>
+
+                                    <?php endwhile; ?>
+
+                                <?php else: ?>
+                                    <div class="empty-box">
+                                        Nenhum histórico encontrado.
+                                    </div>
+                                <?php endif; ?>
+
+                            </div>
+                        </details>
                     </div>
+
 
                 <?php endif; ?>
 
-
-                <div id="modalNovaFamilia" class="modal-excluir">
-                    <div class="modal-content-excluir">
-
-                        <h3>Criar nova família</h3>
-
-                        <p>
-                            Escolha um nome para identificar esse relacionamento familiar.
-                        </p>
-
-                        <input type="text" id="nomeNovaFamilia" placeholder="Ex: Família Oliveira" maxlength="50">
-
-                        <button type="button" onclick="criarFamilia()">
-                            Criar família
-                        </button>
-
-                        <button type="button" onclick="fecharModalNovaFamilia()">
-                            Cancelar
-                        </button>
-
-                    </div>
-                </div>
-
-                <div id="modalNovoRelacionamento" class="modal-excluir">
-                    <div class="modal-content-excluir">
-
-                        <h3>Novo relacionamento</h3>
-
-                        <input type="text" id="nomeFamilia" placeholder="Nome da família">
-
-                        <input type="text" id="codigoDependenteModal" placeholder="BSTR-XXXXXX">
-
-                        <button onclick="enviarConviteRelacionamento()">
-                            Enviar convite
-                        </button>
-
-                        <button type="button" onclick="fecharModalNovoRelacionamento()">
-                            Cancelar
-                        </button>
-                    </div>
-                </div>
-
-                <div id="modalConfigFamilia" class="modal-excluir">
-                    <div class="modal-config-familia">
-
-                        <div class="modal-config-header">
-                            <h3>Configurações da Família</h3>
-                            <button type="button" onclick="fecharModalConfigFamilia()">✕</button>
-                        </div>
-
-                        <input type="hidden" id="idFamiliaConfig">
-
-                        <div class="config-section">
-                            <label>Nome da família</label>
-
-                            <div class="edit-nome-box">
-                                <input type="text" id="novoNomeFamilia" maxlength="50">
-                                <button type="button" onclick="salvarNovoNomeFamilia()">
-                                    Salvar
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="config-actions">
-                            <button type="button" onclick="gerenciarMembros()">
-                                👥 Gerenciar membros
-                            </button>
-
-                            <button class="btnPerigo" onclick="abrirModalExcluir()">
-                                🗑 Excluir família
-                            </button>
-
-
-                            <!-- ARRUMAR MODAL DE CONFIRMARÇÃO DE EXCLUSÃO DE FAMILIA -->
-
-                            <div id="modalConfirmarExclusao" class="modal-excluir">
-                                <div class="modal-content-excluir">
-                                    <h3>Excluir família</h3>
-                                    <p>Tem certeza que deseja excluir esta família?</p>
-
-                                    <div class="modal-buttons">
-                                        <button onclick="excluirFamilia()">Sim, excluir</button>
-                                        <button onclick="fecharModalExcluir()">Cancelar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-
                 <!-- <div id="toast" class="toast"></div>-->
-            </details>
-
-            <details class="accordion-item">
-                <summary>Histórico de Convites</summary>
-
-                <div class="history-list">
-                    <div class="history-item pending">
-                        <strong>Julieta</strong>
-                        <span>Pendente</span>
-                    </div>
-
-                    <div class="history-item accepted">
-                        <strong>Maria</strong>
-                        <span>Aceito</span>
-                    </div>
-
-                    <div class="history-item refused">
-                        <strong>Carlos</strong>
-                        <span>Recusado</span>
-                    </div>
-                </div>
             </details>
 
     </div>
     </details>
 
+    <div id="modalDependente" class="modal-dependente">
+        <div class="modal-dependente-box">
+            <button class="fechar-modal" onclick="fecharModalDependente()"> ✕</button>
+            <div class="dependente-header">
+                <img id="dependenteFoto" src="" class="dependente-foto">
+                <div class="dependente-header-info">
+                    <h2 id="dependenteNome"></h2>
+                    <p id="dependenteEmail"></p>
+                    <span id="dependenteTelefone"></span>
+                </div>
+            </div>
+
+            <div class="dependente-grid">
+
+                <div class="dependente-card-info">
+                    <h4>Tipo sanguíneo</h4>
+                    <span id="dependenteTipoSanguineo"></span>
+                </div>
+
+                <div class="dependente-card-info">
+                    <h4>Alergias</h4>
+                    <span id="dependenteAlergias"></span>
+                </div>
+
+                <div class="dependente-card-info">
+                    <h4>Doenças crônicas</h4>
+                    <span id="dependenteDoencas"></span>
+                </div>
+
+                <div class="dependente-card-info">
+                    <h4>Contato emergência</h4>
+                    <span id="dependenteEmergencia"></span>
+                </div>
+
+            </div>
+
+            <div class="dependente-section">
+                <h3>Últimos registros</h3>
+                <div class="dependente-registros">
+
+                    <div class="registro-box">
+                        <small>🩸 Glicemia</small>
+                        <strong id="dependenteGlicemia">--</strong>
+                    </div>
+
+                    <div class="registro-box">
+                        <small>❤️ Pressão</small>
+                        <strong id="dependentePressao">--</strong>
+                    </div>
+
+                    <div class="registro-box">
+                        <small>🌡 Temperatura</small>
+                        <strong id="dependenteTemperatura">--</strong>
+                    </div>
+
+                    <div class="registro-box">
+                        <small>💓 BPM</small>
+                        <strong id="dependenteBpm">--</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="dependente-section">
+
+                <h3>Próximo evento</h3>
+                <div class="evento-box">
+                    <strong id="dependenteEvento"></strong>
+                    <p id="dependenteEventoData"></p>
+                    <p id="dependenteEventoLocal"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalDependente" class="modal-dependente">
+        <div class="modal-dependente-content">
+            <button class="fechar-modal" onclick="fecharModalDependente()"> ✕ </button>
+            <div id="conteudoDependente"></div>
+        </div>
+    </div>
     </main>
     </div>
 
     <!-- <div class="card">
-        <h3>Resumo de Saúde</h3>
-
-        <div class="stats">
-            <div class="stat-box">
-                <h2>72kg</h2>
-                <p>Peso</p>
-            </div>
-
-            <div class="stat-box">
-                <h2>22.1</h2>
-                <p>IMC</p>
-            </div>
-
-            <div class="stat-box">
-                <h2>7h</h2>
-                <p>Sono médio</p>
-            </div>
-
-            <div class="stat-box">
-                <h2>2L</h2>
-                <p>Água hoje</p>
-            </div>
-        </div>
-    </div> -->
-
-
-
-
+             <h3>Resumo de Saúde</h3>
+            <div class="stats"><div class="stat-box"><h2>72kg</h2> <p>Peso</p></div>
+            <div class="stat-box"><h2>22.1</h2> <p>IMC</p></div>
+            <div class="stat-box"><h2>7h</h2><p>Sono médio</p> </div>
+            <div class="stat-box"> <h2>2L</h2><p>Água hoje</p></div></div></div> -->
 
     <br><br><br><br><br><br><br>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     <!-- Rodapé -->
     <footer class="footer">
@@ -1184,7 +1359,6 @@ $totalFamilias = $resultFamilias->num_rows;
                 }
             });
 
-
             /* ===== MODAL DELETE ===== */
             const modalDelete = document.getElementById("modalDeleteConta");
             const inputDelete = document.getElementById("confirmacaoDelete");
@@ -1237,28 +1411,27 @@ $totalFamilias = $resultFamilias->num_rows;
 
         // MODAL NOTIFICAÇÃO
         document.addEventListener("DOMContentLoaded", function () {
-
             const modalNotificacoes = document.getElementById("modalNotificacoes");
             const btnNotificacao = document.getElementById("btnNotificacao");
 
-            if (!modalNotificacoes || !btnNotificacao) {
-                console.log("Elemento não encontrado");
-                return;
-            }
+            console.log(btnNotificacao);
+            console.log(modalNotificacoes);
 
-            btnNotificacao.addEventListener("click", function () {
-                modalNotificacoes.style.display = "flex";
-            });
+            if (btnNotificacao && modalNotificacoes) {
+                btnNotificacao.addEventListener("click", function () {
+                    modalNotificacoes.style.display = "flex";
+                });
 
-            window.fecharNotificacoes = function () {
-                modalNotificacoes.style.display = "none";
-            };
-
-            window.addEventListener("click", function (e) {
-                if (e.target === modalNotificacoes) {
+                window.fecharNotificacoes = function () {
                     modalNotificacoes.style.display = "none";
-                }
-            });
+                };
+
+                window.addEventListener("click", function (e) {
+                    if (e.target === modalNotificacoes) {
+                        modalNotificacoes.style.display = "none";
+                    }
+                });
+            }
         });
 
 
@@ -1414,8 +1587,283 @@ $totalFamilias = $resultFamilias->num_rows;
             document.getElementById("modalConfirmarExclusao").style.display = "none";
         }
 
+
+        function abrirModalAdicionarDependente(idFamilia) {
+            document.getElementById("idFamiliaDependente").value = idFamilia;
+            document.getElementById("modalAdicionarDependente").style.display = "flex";
+        }
+
+        function fecharModalDependente() {
+            document.getElementById("modalAdicionarDependente").style.display = "none";
+            document.getElementById("codigoDependente").value = "";
+        }
+
+        function adicionarDependente() {
+            const idFamilia = document.getElementById("idFamiliaDependente").value;
+            const codigo = document.getElementById("codigoDependente").value.trim();
+
+            fetch("/Saude_PI_DSM-main/php/usuario/relacionamento/enviarConvite.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body:
+                    "idFamilia=" + encodeURIComponent(idFamilia) +
+                    "&codigoDependente=" + encodeURIComponent(codigo)
+            })
+                .then(res => res.text())
+                .then(data => {
+                    if (data.trim() === "ok") {
+                        alert("Convite enviado!");
+                        location.reload();
+                    } else {
+                        alert(data);
+                    }
+                });
+        }
+
+
+        function abrirModalGerenciarMembros(idFamilia) {
+            document.getElementById("idFamiliaGerenciar").value = idFamilia;
+            document.getElementById("modalGerenciarMembros").style.display = "flex";
+
+            fetch("/Saude_PI_DSM-main/php/usuario/relacionamento/listarMembros.php?idFamilia=" + idFamilia)
+                .then(res => res.text())
+                .then(data => {
+                    document.getElementById("listaMembrosGerenciar").innerHTML = data;
+                });
+        }
+
+        function fecharModalGerenciarMembros() {
+            document.getElementById("modalGerenciarMembros").style.display = "none";
+        }
+
+
+        function removerMembro(idFamiliaUsuario) {
+            if (!confirm("Remover este membro?")) return;
+
+            fetch("/Saude_PI_DSM-main/php/usuario/relacionamento/removerMembro.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "idFamiliaUsuario=" + idFamiliaUsuario
+            })
+                .then(res => res.text())
+                .then(data => {
+                    if (data.trim() === "ok") {
+                        location.reload();
+                    } else {
+                        alert(data);
+                    }
+                });
+        }
+
+
+
+        function abrirModalDependente(usuario) {
+
+            document.getElementById("modalDependente")
+                .classList.add("active");
+
+            document.body.style.overflow = "hidden";
+
+            /*
+            FOTO
+            */
+
+            let foto = "/Saude_PI_DSM-main/Img/defaultUser.png";
+
+            if (usuario.foto && usuario.foto !== "") {
+
+                foto = `/Saude_PI_DSM-main/uploads/${usuario.foto}`;
+
+            }
+
+            document.getElementById("dependenteFoto")
+                .src = foto;
+
+            /*
+            HEADER
+            */
+
+            document.getElementById("dependenteNome")
+                .innerText = usuario.nomeUsuario || "-";
+
+            document.getElementById("dependenteEmail")
+                .innerText = usuario.emailUsuario || "-";
+
+            document.getElementById("dependenteTelefone")
+                .innerText = usuario.telefoneUsuario || "-";
+
+            /*
+            INFO
+            */
+
+            document.getElementById("dependenteTipoSanguineo")
+                .innerText = usuario.tipoSanguineo || "Não informado";
+
+            document.getElementById("dependenteAlergias")
+                .innerText = usuario.alergias || "Nenhuma";
+
+            document.getElementById("dependenteDoencas")
+                .innerText = usuario.doencasCronicas || "Nenhuma";
+
+            document.getElementById("dependenteEmergencia")
+                .innerText = usuario.contatoEmergencia || "Não informado";
+
+        }
+
+        function fecharModalDependente() {
+
+            document.getElementById("modalDependente")
+                .classList.remove("active");
+
+            document.body.style.overflow = "auto";
+
+        }
+
+        window.addEventListener("click", function (e) {
+
+            const modal = document.getElementById("modalDependente");
+
+            if (e.target === modal) {
+
+                fecharModalDependente();
+
+            }
+
+        });
     </script>
 
+
+    <!-- TODOS OS MODAL'S -->
+
+    <div id="modalGerenciarMembros" class="modal-excluir">
+        <div class="modal-config-familia">
+
+            <div class="modal-config-header">
+                <h3>Gerenciar membros</h3>
+                <button onclick="fecharModalGerenciarMembros()">✕</button>
+            </div>
+
+            <input type="hidden" id="idFamiliaGerenciar">
+
+            <div id="listaMembrosGerenciar">
+                <?php foreach ($membros as $membro): ?>
+                    <div class="membro-gerenciar">
+                        <div>
+                            <strong>
+                                <?= htmlspecialchars($membro['nome']) ?>
+                            </strong>
+                            <small>
+                                <?= htmlspecialchars($membro['statusMembro']) ?>
+                            </small>
+                        </div>
+
+                        <?php if ($membro['papel'] !== 'responsavel'): ?>
+                            <button onclick="removerMembro(<?= $membro['idUsuario'] ?>)">
+                                Remover
+                            </button>
+                        <?php else: ?>
+                            <span class="badge-responsavel">Responsável</span>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalNovaFamilia" class="modal-excluir">
+        <div class="modal-content-excluir">
+
+            <h3>Criar nova família</h3>
+
+            <p>
+                Escolha um nome para identificar esse relacionamento familiar.
+            </p>
+
+            <input type="text" id="nomeNovaFamilia" placeholder="Ex: Família Oliveira" maxlength="50">
+
+            <button type="button" onclick="criarFamilia()">
+                Criar família
+            </button>
+
+            <button type="button" onclick="fecharModalNovaFamilia()">
+                Cancelar
+            </button>
+
+        </div>
+    </div>
+
+    <div id="modalNovoRelacionamento" class="modal-excluir">
+        <div class="modal-content-excluir">
+
+            <h3>Novo relacionamento</h3>
+
+            <input type="text" id="nomeFamilia" placeholder="Nome da família">
+
+            <input type="text" id="codigoDependenteModal" placeholder="BSTR-XXXXXX">
+
+            <button onclick="enviarConviteRelacionamento()">
+                Enviar convite
+            </button>
+
+            <button type="button" onclick="fecharModalNovoRelacionamento()">
+                Cancelar
+            </button>
+        </div>
+    </div>
+
+    <div id="modalConfigFamilia" class="modal-excluir">
+        <div class="modal-config-familia">
+
+            <div class="modal-config-header">
+                <h3>Configurações da Família</h3>
+                <button type="button" onclick="fecharModalConfigFamilia()">✕</button>
+            </div>
+
+            <input type="hidden" id="idFamiliaConfig">
+
+            <div class="config-section">
+                <label>Nome da família</label>
+
+                <div class="edit-nome-box">
+                    <input type="text" id="novoNomeFamilia" maxlength="50">
+                    <button type="button" onclick="salvarNovoNomeFamilia()">
+                        Salvar
+                    </button>
+                </div>
+            </div>
+
+            <div class="config-actions">
+                <!-- <button type="button" onclick="gerenciarMembros()">
+                                👥 Gerenciar membros
+                            </button> -->
+
+                <button class="btnPerigo" onclick="abrirModalExcluir()">
+                    🗑 Excluir família
+                </button>
+
+
+                <!-- ARRUMAR MODAL DE CONFIRMARÇÃO DE EXCLUSÃO DE FAMILIA -->
+
+                <div id="modalConfirmarExclusao" class="modal-excluir">
+                    <div class="modal-content-excluir">
+                        <h3>Excluir família</h3>
+                        <p>Tem certeza que deseja excluir esta família?</p>
+
+                        <div class="modal-buttons">
+                            <button onclick="excluirFamilia()">Sim, excluir</button>
+                            <button onclick="fecharModalExcluir()">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
     <div id="modalDeleteConta" class="modal-excluir">
         <div class="modal-content-excluir">
@@ -1437,6 +1885,23 @@ $totalFamilias = $resultFamilias->num_rows;
                 Cancelar
             </button>
 
+        </div>
+    </div>
+
+
+    <div id="modalAdicionarDependente" class="modal-excluir">
+        <div class="modal-content-excluir">
+            <h3>Adicionar dependente</h3>
+            <p>Insira o código único do dependente</p>
+
+            <input type="hidden" id="idFamiliaDependente">
+
+            <input type="text" id="codigoDependente" placeholder="Ex: BSTR-XXXXXX" maxlength="20">
+
+            <div class="modal-buttons">
+                <button onclick="adicionarDependente()">Adicionar</button>
+                <button onclick="fecharModalDependente()">Cancelar</button>
+            </div>
         </div>
     </div>
 
@@ -1470,29 +1935,37 @@ $totalFamilias = $resultFamilias->num_rows;
                                     <strong>
                                         <?= htmlspecialchars($convite['nomeUsuario']) ?>
                                     </strong>
-                                    <p>Família
-                                        <?= htmlspecialchars($convite['nomeUsuario']) ?>
+
+                                    <!-- <p>
+                                        convidou você para entrar em
+                                        <?= htmlspecialchars($convite['nomeFamilia']) ?>
+                                    </p> -->
+
+                                    <p>
+                                        convidou você para um relacionamento familiar
                                     </p>
+
                                     <small>
-                                        Convite válido até:
-                                        <?= date('d/m/Y', strtotime($convite['validadeConvite'])) ?>
+                                        válido até <?= date('d/m/Y', strtotime($convite['validadeConvite'])) ?>
                                     </small>
                                 </div>
 
+
+                                <form id="formAceitar<?= $convite['idConvite'] ?>"
+                                    action="/Saude_PI_DSM-main/php/usuario/relacionamento/aceitarConvite.php" method="POST">
+                                    <input type="hidden" name="idConvite" value="<?= $convite['idConvite'] ?>">
+                                </form>
+
                                 <div class="convite-acoes">
 
-                                    <form action="php/relacionamento/aceitarConvite.php" method="POST">
-                                        <input type="hidden" name="idConvite" value="<?= $convite['idConvite'] ?>">
-                                        <button type="submit" class="btn-aceitar">
-                                            Aceitar
-                                        </button>
-                                    </form>
+                                    <button type="button" class="btn-aceitar"
+                                        onclick="document.getElementById('formAceitar<?= $convite['idConvite'] ?>').submit()">
+                                        Aceitar
+                                    </button>
 
-                                    <form action="php/relacionamento/recusarConvite.php" method="POST">
+                                    <form action="php/usuario/relacionamento/recusarConvite.php" method="POST">
                                         <input type="hidden" name="idConvite" value="<?= $convite['idConvite'] ?>">
-                                        <button type="submit" class="btn-recusar">
-                                            Recusar
-                                        </button>
+                                        <button type="submit" class="btn-recusar">Recusar</button>
                                     </form>
 
                                 </div>

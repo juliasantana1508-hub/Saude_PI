@@ -38,13 +38,12 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-
 <body>
-    <!-- Header -->
+
     <!-- Header -->
     <header class="TopoSite">
         <div class="Logo">
-            <img class="ImgLogo" src="Img/bemEstar.webp" alt="Logo Bem Estar 360">
+            <img class="ImgLogo" id="logoSite" src="./Img/logoBemEstar-clara.png" alt="Logo BemEstar360">
         </div>
 
         <button class="menu-toggle" aria-label="Abrir menu">
@@ -53,12 +52,12 @@
 
         <nav class="Navegacao">
             <ul>
-                <li><a href="./index.html" data-lang="home">Home</a></li>
-                <li><a href="./monitoramento.html" data-lang="monitoring">Monitoramento</a></li>
-                <li><a href="#" data-lang="history">Histórico</a></li>
-                <li><a href="#" data-lang="services">Serviços</a></li>
-                <li><a href="#" data-lang="about">Quem somos</a></li>
-
+                <li><a href="./index.php" data-lang="home">Home</a></li>
+                <li><a href="./monitoramento.php" data-lang="monitoring">Monitoramento</a></li>
+                <li><a href="./calendario.php" data-lang="calendar">Agenda</a></li>
+                <li><a href="./servicos.php" data-lang="services">Serviços</a></li>
+                <li><a href="./quemSomos.php" data-lang="about">Quem somos</a></li>
+                <li><a href="./login.php" data-lang="login">Login</a></li>
 
                 <!-- Menu Configurações -->
                 <li class="config-menu">
@@ -75,15 +74,22 @@
     </header>
 
     <!-- Pressão Arterial -->
-
-
     <section class="registroIndicador">
         <div class="container">
+            <div class="leftSide">
             <h1>Registre a sua temperatura corporal</h1>
+
+            <p class="descricaoIndicador">
+                    Monitorar sua temperatura corporal regularmente ajuda na prevenção
+                    de problemas de saúde e no acompanhamento da sua condição física.
+                    Registre suas medições de forma simples e acompanhe sua evolução.
+            </p>
+            
             <div class="leftImg">
                 <img src="./Img/medindoTemperatura.webp" alt="Temperatura">
             </div>
-
+            </div>
+            
             <div class="rightForms">
                 <form id="temperaturaForm">
                     <div class="input-group">
@@ -108,15 +114,13 @@
                             placeholder="Ex: medi após atividade física..."></textarea>
                     </div>
 
-                    <button type="submit" id="salvarTemperatura">Salvar Registro</button>
+                   <button type="submit" class="btnSalvarRegistro">Salvar Registro</button>
                 </form>
                 <script src="./script_Registro/scriptRegistroTemperatura.js"></script>
 
             </div>
         </div>
     </section>
-
-
 
     <section class="help">
         <div class="help-container">
@@ -145,24 +149,22 @@
         </div>
     </section>
 
-
-
-
     <!-- Rodapé -->
     <footer class="footer">
         <div class="footerContainer">
             <!-- Logo e nome -->
             <div class="footerBrand">
-                <img src="Img/2.png" alt="Bem Estar 360" class="footerLogo">
-
+               <img src="./Img/Footer.png" alt="Bem Estar 360" class="footerLogo">
             </div>
 
             <div class="footerLinks">
                 <ul>
-                    <li><a href="./index.html" data-lang="footerHome">Home</a></li>
-                    <li><a href="./monitoramento.html" data-lang="footerMonitoring">Monitoramento</a></li>
-                    <li><a href="./servicos.html" data-lang="footerServices">Serviços</a></li>
-                    <li><a href="./quemSomos.html" data-lang="about">Quem somos</a></li>
+                    <li><a href="./index.php" data-lang="home">Home</a></li>
+                    <li><a href="./monitoramento.php" data-lang="monitoring">Monitoramento</a></li>
+                    <li><a href="./calendario.php" data-lang="calendar">Agenda</a></li>
+                    <li><a href="./servicos.php" data-lang="services">Serviços</a></li>
+                    <li><a href="./quemSomos.php" data-lang="about">Quem somos</a></li>
+                    <li><a href="./login.php" data-lang="login">Login</a></li>
                 </ul>
             </div>
 

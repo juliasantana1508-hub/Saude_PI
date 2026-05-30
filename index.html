@@ -42,19 +42,19 @@
     <!-- Header -->
     <header class="TopoSite">
         <div class="Logo">
-            <img class="ImgLogo" src="Img/bemEstar.webp" alt="Logo Bem Estar 360">
+            <img class="ImgLogo" id="logoSite" src="./Img/logoBemEstar-clara.png" alt="Logo BemEstar360">
         </div>
 
         <button class="menu-toggle" aria-label="Abrir menu">☰</button>
 
         <nav class="Navegacao">
             <ul>
-                <li><a href="./index.php" data-lang="home">Home</a></li>
-                <li><a href="./monitoramento.html" data-lang="monitoring">Monitoramento</a></li>
-                <li><a href="./calendario.html" data-lang="">Agenda</a></li>
-                <li><a href="./servicos.html" data-lang="services">Serviços</a></li>
-                <li><a href="./quemSomos.html" data-lang="about">Quem somos</a></li>
-                <li><a href="./login.html" data-lang="login">Login</a></li>
+                    <li><a href="./index.php" data-lang="home">Home</a></li>
+                    <li><a href="./monitoramento.php" data-lang="monitoring">Monitoramento</a></li>
+                    <li><a href="./calendario.php" data-lang="calendar">Agenda</a></li>
+                    <li><a href="./servicos.php" data-lang="services">Serviços</a></li>
+                    <li><a href="./quemSomos.php" data-lang="about">Quem somos</a></li>
+                    <li><a href="./login.php" data-lang="login">Login</a></li>
 
                 <!-- Menu de Configurações -->
                 <li class="config-menu">
@@ -254,9 +254,9 @@
         </div>
     </section>
 
-
+<!--UBS-->
     <section class="ubs-section">
-        <h2 class="ubs-section-title" data-lang="textUbsSection">Nossas UBS</h2>
+        <h2 class="ubs-section-title">Nossas UBS</h2>
 
         <div class="ubs-slider">
             <ul class="ubs-list">
@@ -266,12 +266,11 @@
                     </div>
                     <div class="ubs-content">
                         <h3 class="ubs-name">UBS Itaquera</h3>
-                        <p class="ubs-description" data-lang="ubsDesc1">
+                        <p class="ubs-description" data-lang="ubsitaquera">
                             Localizada na Rua Américo Salvador Novelli, 265, oferece atendimento clínico, vacinação e
                             exames de rotina.
                         </p>
-                        <button onclick="abrirNoMaps(-23.539298875972847, -46.455240619332)" class="ubs-button"
-                            data-lang="textVerRota">
+                        <button onclick="abrirNoMaps(-23.539298875972847, -46.455240619332)" class="ubs-button" data-lang="route_button">
                             Ver rota
                         </button>
                     </div>
@@ -283,12 +282,11 @@
                     </div>
                     <div class="ubs-content">
                         <h3 class="ubs-name">UBS Vila Carmosina</h3>
-                        <p class="ubs-description" data-lang="ubsDesc2">
+                        <p class="ubs-description" data-lang="ubscarmosina">
                             Situada na Rua Ipopoca, 61, oferece atendimento clínico, vacinação e exames de rotina.
                             no centro da cidade, oferece atendimento clínico, vacinação e exames de rotina.
                         </p>
-                        <button onclick="abrirNoMaps(-23.549686649777833, -46.44868669891686)" class="ubs-button"
-                            data-lang="textVerRota">
+                        <button onclick="abrirNoMaps(-23.549686649777833, -46.44868669891686)" class="ubs-button" data-lang="route_button">
                             Ver rota
                         </button>
                     </div>
@@ -300,12 +298,11 @@
                     </div>
                     <div class="ubs-content">
                         <h3 class="ubs-name">UBS Vila Nossa Senhora Aparecida</h3>
-                        <p class="ubs-description" data-lang="ubsDesc3">
+                        <p class="ubs-description" data-lang="ubsaparecida">
                             Localizada na Rua Paulino Serqueira, 1, oferece atendimento clínico, vacinação e exames de
                             rotina.
                         </p>
-                        <button onclick="abrirNoMaps(-23.53414480520631, -46.4427562317228)" class="ubs-button"
-                            data-lang="textVerRota">
+                        <button onclick="abrirNoMaps(-23.53414480520631, -46.4427562317228)" class="ubs-button" data-lang="route_button">
                             Ver rota
                         </button>
                     </div>
@@ -313,16 +310,15 @@
 
                 <li class="ubs-card">
                     <div class="ubs-image-wrapper">
-                        <img src="./Img/josebonifacio.png" alt="UBS Central" class="ubs-image">
+                        <img src="./Img/UBS_JoseBoni2.png" alt="UBS Central" class="ubs-image">
                     </div>
                     <div class="ubs-content">
                         <h3 class="ubs-name">UBS José Bonifácio II</h3>
-                        <p class="ubs-description" data-lang="ubsDesc4">
+                        <p class="ubs-description" data-lang="ubsbonifacio">
                             Situada na Rua Murmúrios da Tarde, oferece atendimento clínico, vacinação e exames de
                             rotina.
                         </p>
-                        <button onclick="abrirNoMaps(-23.553662524171656, -46.4446753047391)" class="ubs-button"
-                            data-lang="textVerRota">
+                        <button onclick="abrirNoMaps(-23.553662524171656, -46.4446753047391)" class="ubs-button" data-lang="route_button">
                             Ver rota
                         </button>
                     </div>
@@ -334,12 +330,11 @@
                     </div>
                     <div class="ubs-content">
                         <h3 class="ubs-name">UBS/AMA José Bonifácio III</h3>
-                        <p class="ubs-description" data-lang="ubsDesc5">
+                       <p class="ubs-description" data-lang="ubsama">
                             Localizada na Rua Sílvio Barbini, 40, oferece atendimento clínico, vacinação e exames de
                             rotina.
                         </p>
-                        <button onclick="abrirNoMaps(-23.540641766427793, -46.4393115759034)" class="ubs-button"
-                            data-lang="textVerRota">
+                        <button onclick="abrirNoMaps(-23.540641766427793, -46.4393115759034)" class="ubs-button" data-lang="route_button">
                             Ver rota
                         </button>
                     </div>
@@ -351,12 +346,11 @@
                     </div>
                     <div class="ubs-content">
                         <h3 class="ubs-name">UBS Cidade Líder</h3>
-                        <p class="ubs-description" data-lang="ubsDesc6">
+                        <p class="ubs-description" data-lang="ubslider">
                             Localizada na Av. Dr. Francisco Munhoz Filho, 379, oferece atendimento clínico, vacinação e
                             exames de rotina.
                         </p>
-                        <button onclick="abrirNoMaps(-23.554291369235724, -46.46517399124749)" class="ubs-button"
-                            data-lang="textVerRota">
+                        <button onclick="abrirNoMaps(-23.554291369235724, -46.46517399124749)" class="ubs-button" data-lang="route_button">
                             Ver rota
                         </button>
                     </div>
@@ -366,7 +360,6 @@
         </div>
     </section>
 
-
     <br><br>
 
     <!-- Rodapé -->
@@ -374,16 +367,17 @@
         <div class="footerContainer">
             <!-- Logo e nome -->
             <div class="footerBrand">
-                <img src="Img/2.png" alt="Bem Estar 360" class="footerLogo">
-
+                <img src="./Img/Footer.png" alt="Bem Estar 360" class="footerLogo">
             </div>
 
             <div class="footerLinks">
                 <ul>
-                    <li><a href="./index.html" data-lang="footerHome">Home</a></li>
-                    <li><a href="./monitoramento.html" data-lang="footerMonitoring">Monitoramento</a></li>
-                    <li><a href="./servicos.html" data-lang="footerServices">Serviços</a></li>
-                    <li><a href="./quemSomos.html" data-lang="about">Quem somos</a></li>
+                    <li><a href="./index.php" data-lang="home">Home</a></li>
+                    <li><a href="./monitoramento.php" data-lang="monitoring">Monitoramento</a></li>
+                    <li><a href="./calendario.php" data-lang="calendar">Agenda</a></li>
+                    <li><a href="./servicos.php" data-lang="services">Serviços</a></li>
+                    <li><a href="./quemSomos.php" data-lang="about">Quem somos</a></li>
+                    <li><a href="./login.php" data-lang="login">Login</a></li>
                 </ul>
             </div>
 

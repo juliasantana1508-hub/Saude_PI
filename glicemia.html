@@ -26,7 +26,7 @@
     <link rel="shortcut icon" href="icon/icon_BemEstar360.ico">
 
     <!-- CSS externo -->
-    <link rel="stylesheet" href="Css/estiloIndicadores.css">
+    <link rel="stylesheet" href="./Css/estiloIndicadores.css">
 
 
 
@@ -43,7 +43,7 @@
     <!-- Header -->
     <header class="TopoSite">
         <div class="Logo">
-            <img class="ImgLogo" src="Img/bemEstar.webp" alt="Logo Bem Estar 360">
+            <img class="ImgLogo" id="logoSite" src="./Img/logoBemEstar-clara.png" alt="Logo BemEstar360">
         </div>
 
         <button class="menu-toggle" aria-label="Abrir menu">
@@ -52,11 +52,12 @@
 
         <nav class="Navegacao">
             <ul>
-                <li><a href="./index.html" data-lang="home">Home</a></li>
-                <li><a href="./monitoramento.html" data-lang="monitoring">Monitoramento</a></li>
-                <li><a href="#" data-lang="services">Serviços</a></li>
-                <li><a href="#" data-lang="about">Quem somos</a></li>
-
+                <li><a href="./index.php" data-lang="home">Home</a></li>
+                <li><a href="./monitoramento.php" data-lang="monitoring">Monitoramento</a></li>
+                <li><a href="./calendario.php" data-lang="calendar">Agenda</a></li>
+                <li><a href="./servicos.php" data-lang="services">Serviços</a></li>
+                <li><a href="./quemSomos.php" data-lang="about">Quem somos</a></li>
+                <li><a href="./login.php" data-lang="login">Login</a></li>
 
                 <!-- Menu Configurações -->
                 <li class="config-menu">
@@ -78,10 +79,19 @@
 
     <section class="registroIndicador">
         <div class="container">
+            <div class="leftSide">
             <h1>Registre a sua Glicemia</h1>
+                 
+            <p class="descricaoIndicador">
+                    Monitorar sua glicemia regularmente ajuda na prevenção
+                    de problemas metabólicos e no acompanhamento da sua saúde.
+                    Registre suas medições de forma simples e acompanhe sua evolução.
+            </p>
+
             <div class="leftImg">
                 <img src="./Img/medindoGlicemia.webp" alt="Glicemia">
             </div>
+           </div>
 
             <div class="rightForms">
                 <form id="glicemiaForm">
@@ -116,7 +126,7 @@
                             placeholder="Ex: medi após caminhada, senti tontura..."></textarea>
                     </div>
 
-                    <button type="submit" id="salvarGlicemia">Salvar Registro</button>
+                    <button type="submit" class="btnSalvarRegistro">Salvar Registro</button>
                 </form>
                 <script src="./script_Registro/scriptRegistroGlicemia.js"></script>
             </div>
@@ -165,16 +175,17 @@
         <div class="footerContainer">
             <!-- Logo e nome -->
             <div class="footerBrand">
-                <img src="Img/2.png" alt="Bem Estar 360" class="footerLogo">
-
+                <img src="./Img/Footer.png" alt="Bem Estar 360" class="footerLogo">
             </div>
 
             <div class="footerLinks">
                 <ul>
-                    <li><a href="./index.html" data-lang="footerHome">Home</a></li>
-                    <li><a href="./monitoramento.html" data-lang="footerMonitoring">Monitoramento</a></li>
-                    <li><a href="./servicos.html" data-lang="footerServices">Serviços</a></li>
-                    <li><a href="./quemSomos.html" data-lang="about">Quem somos</a></li>
+                    <li><a href="./index.php" data-lang="home">Home</a></li>
+                    <li><a href="./monitoramento.php" data-lang="monitoring">Monitoramento</a></li>
+                    <li><a href="./calendario.php" data-lang="calendar">Agenda</a></li>
+                    <li><a href="./servicos.php" data-lang="services">Serviços</a></li>
+                    <li><a href="./quemSomos.php" data-lang="about">Quem somos</a></li>
+                    <li><a href="./login.php" data-lang="login">Login</a></li>
                 </ul>
             </div>
 

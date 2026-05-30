@@ -3,8 +3,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once '../utils/alert.php';
 
-
-
 include("../config/conexao.php");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -20,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario = $_POST['emailUsuario'] ?? null;
 
     $senha = isset($_POST['senha']) ? password_hash($_POST['senha'], PASSWORD_DEFAULT) : null;
-    $tipo = $_POST['tipoUsuario'] ?? null;
+    $tipo = strtolower(trim($_POST['tipoUsuario'] ?? 'usuario'));
 
 
     if (!$usuario || !$senha || !$tipo) {
